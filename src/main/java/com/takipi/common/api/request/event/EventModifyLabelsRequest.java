@@ -1,6 +1,7 @@
 package com.takipi.common.api.request.event;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,7 +35,7 @@ public class EventModifyLabelsRequest extends ServiceRequest implements ApiPostR
 	@Override
 	public byte[] postData() throws UnsupportedEncodingException {
 		return JsonUtil.createSimpleJson(ImmutableMap.of("add", JsonUtil.createSimpleJson(addLabels, true), "remove",
-				JsonUtil.createSimpleJson(removeLabels, true))).getBytes(ApiConstants.UTF8_ENCODING);
+				JsonUtil.createSimpleJson(removeLabels, true))).getBytes(StandardCharsets.UTF_8);
 	}
 
 	@Override

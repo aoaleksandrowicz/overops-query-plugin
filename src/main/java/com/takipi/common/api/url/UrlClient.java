@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -265,7 +266,7 @@ public abstract class UrlClient {
 		InputStreamReader isr = null;
 
 		try {
-			isr = new InputStreamReader(is, ApiConstants.UTF8_ENCODING);
+			isr = new InputStreamReader(is, StandardCharsets.UTF_8);
 
 			return IOUtils.toString(isr);
 		} catch (Exception ex) {
@@ -315,7 +316,7 @@ public abstract class UrlClient {
 		}
 
 		public static <T> Response<T> of(int responseCode, T data) {
-			return new Response<T>(responseCode, data);
+			return new Response<>(responseCode, data);
 		}
 	}
 }

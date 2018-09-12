@@ -1,6 +1,7 @@
 package com.takipi.common.api.request.alert;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class AnomalyAlertRequest extends AlertRequest {
 
 		String json = JsonUtil.createSimpleJson(map, false);
 
-		return json.getBytes(ApiConstants.UTF8_ENCODING);
+		return json.getBytes(StandardCharsets.UTF_8);
 	}
 
 	private String timeframeJson() {

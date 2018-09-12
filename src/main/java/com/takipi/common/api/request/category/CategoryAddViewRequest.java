@@ -1,6 +1,7 @@
 package com.takipi.common.api.request.category;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.google.common.collect.ImmutableMap;
 import com.takipi.common.api.consts.ApiConstants;
@@ -34,7 +35,7 @@ public class CategoryAddViewRequest extends ServiceRequest implements ApiPostReq
 	public byte[] postData() throws UnsupportedEncodingException {
 		String json = JsonUtil.createSimpleJson(ImmutableMap.of("view_id", viewId), true);
 
-		return json.getBytes(ApiConstants.UTF8_ENCODING);
+		return json.getBytes(StandardCharsets.UTF_8);
 	}
 
 	public static Builder newBuilder() {

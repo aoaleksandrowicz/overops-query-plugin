@@ -91,7 +91,7 @@ public class Input {
 
 	private static long getLong(String value) {
 		if (StringUtils.isEmpty(value)) {
-			return 0l;
+			return 0L;
 		}
 
 		return Long.parseLong(value.trim());
@@ -160,7 +160,7 @@ public class Input {
 			}
 
 			String key = StringUtils.trim(actualLine.substring(0, index));
-			String value = StringUtils.trim(actualLine.substring(index + 1, actualLine.length()));
+			String value = StringUtils.trim(actualLine.substring(index + 1));
 
 			if (key.isEmpty()) {
 				throw new IllegalArgumentException("Invalid input line - " + actualLine);

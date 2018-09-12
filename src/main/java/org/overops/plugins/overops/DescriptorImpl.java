@@ -74,7 +74,7 @@ public final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 		}
 
 		// Admin permission check
-		Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+		Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
 		try {
 			String apiKey = Secret.toString(overOpsAPIKey);

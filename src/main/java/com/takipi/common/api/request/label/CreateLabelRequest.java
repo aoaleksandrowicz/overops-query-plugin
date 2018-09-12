@@ -1,6 +1,7 @@
 package com.takipi.common.api.request.label;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.google.common.base.Strings;
@@ -37,7 +38,7 @@ public class CreateLabelRequest extends ServiceRequest implements ApiPostRequest
 			map.put("color", color);
 		}
 
-		return JsonUtil.createSimpleJson(map, true).getBytes(ApiConstants.UTF8_ENCODING);
+		return JsonUtil.createSimpleJson(map, true).getBytes(StandardCharsets.UTF_8);
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package com.takipi.common.udf.volume;
 
 import java.net.HttpURLConnection;
-import java.util.Collections;
-import java.util.Comparator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -54,7 +52,7 @@ public class ThresholdFunction {
 			throw new IllegalArgumentException("'timespan' must be positive");
 		}
 
-		if (input.threshold <= 0l) {
+		if (input.threshold <= 0L) {
 			throw new IllegalArgumentException("'threshold' must be positive");
 		}
 
@@ -111,7 +109,7 @@ public class ThresholdFunction {
 			return;
 		}
 
-		long hitCount = 0l;
+		long hitCount = 0L;
 
 		for (EventResult event : eventsVolumeResult.events) {
 			if (event.stats != null) {
@@ -132,15 +130,12 @@ public class ThresholdFunction {
 			break;
 
 		case Method_Calls: {
-			long invocationsCount = 0l;
+			long invocationsCount = 0L;
 
-			Collections.sort(eventsVolumeResult.events, new Comparator<EventResult>() {
-				@Override
-				public int compare(EventResult o1, EventResult o2) {
-					int i1 = Integer.parseInt(o1.id);
-					int i2 = Integer.parseInt(o2.id);
-					return i1 - i2;
-				};
+			eventsVolumeResult.events.sort((o1, o2) -> {
+				int i1 = Integer.parseInt(o1.id);
+				int i2 = Integer.parseInt(o2.id);
+				return i1 - i2;
 			});
 
 			for (EventResult event : eventsVolumeResult.events) {
@@ -178,7 +173,7 @@ public class ThresholdFunction {
 				throw new IllegalStateException("Missing events volume result.");
 			}
 
-			long transactionInvocationsCount = 0l;
+			long transactionInvocationsCount = 0L;
 
 			for (Transaction transaction : transactionsVolumeResult.transactions) {
 				if (transaction.stats != null) {
@@ -186,7 +181,7 @@ public class ThresholdFunction {
 				}
 			}
 
-			if (transactionInvocationsCount > 0l) {
+			if (transactionInvocationsCount > 0L) {
 				double failRate = (hitCount / (double) transactionInvocationsCount) * 100.0;
 
 				thresholdExceeded = (failRate >= input.rate);

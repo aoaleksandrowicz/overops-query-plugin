@@ -23,7 +23,7 @@ public class ApiLabelUtil {
 			return Collections.emptyMap();
 		}
 
-		Map<String, Label> result = new HashMap<String, Label>();
+		Map<String, Label> result = new HashMap<>();
 
 		for (Label label : labelsResponse.data.labels) {
 			result.put(label.name, label);

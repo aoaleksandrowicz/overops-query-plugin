@@ -26,7 +26,7 @@ public class RegressionReportBuilder {
 		RegressionReport(List<OOReportEvent> newIssues, List<OOReportRegressedEvent> regressions, boolean unstable) {
 			this.newIssues = newIssues;
 			this.regressions = regressions;
-			this.allIssues = new ArrayList<OOReportEvent>();
+			this.allIssues = new ArrayList<>();
 			
 			allIssues.addAll(newIssues);
 			allIssues.addAll(regressions);
@@ -87,7 +87,7 @@ public class RegressionReportBuilder {
 	private static List<OOReportEvent> getReportSevereEvents(ApiClient apiClient, String serviceId, int timespan,
 			Collection<EventResult> events, String type) {
 
-		List<OOReportEvent> result = new ArrayList<OOReportEvent>();
+		List<OOReportEvent> result = new ArrayList<>();
 
 		for (EventResult event : events) {
 
@@ -103,7 +103,7 @@ public class RegressionReportBuilder {
 	private static List<OOReportEvent> getReportNewEvents(ApiClient apiClient, String serviceId,
 			int timespan, RateRegression rateRegression) {
 		
-		List<OOReportEvent> result = new ArrayList<OOReportEvent>();
+		List<OOReportEvent> result = new ArrayList<>();
 		
 		for (EventResult event : rateRegression.getAllNewEvents().values()) {
 	
@@ -129,7 +129,7 @@ public class RegressionReportBuilder {
 	private static List<OOReportEvent> getAllNewEvents(ApiClient apiClient, String serviceId,
 			int baselineTimespan, RateRegression rateRegression) {
 		
-		List<OOReportEvent> result = new ArrayList<OOReportEvent>();
+		List<OOReportEvent> result = new ArrayList<>();
 		
 		result.addAll(getReportSevereEvents(apiClient, serviceId, baselineTimespan,
 			rateRegression.getCriticalNewEvents().values(), OOReportEvent.SEVERE_NEW));
@@ -145,7 +145,7 @@ public class RegressionReportBuilder {
 	private static List<OOReportRegressedEvent> getAllRegressions(ApiClient apiClient, String serviceId,
 			int timespan, RateRegression rateRegression) {
 
-		List<OOReportRegressedEvent> result = new ArrayList<OOReportRegressedEvent>();
+		List<OOReportRegressedEvent> result = new ArrayList<>();
 
 		for (RegressionPair pair : rateRegression.getCriticalRegressions().values()) {
 

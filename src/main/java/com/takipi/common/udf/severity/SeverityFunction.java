@@ -37,7 +37,7 @@ public class SeverityFunction {
 		ApiLabelUtil.createLabelsIfNotExists(args.apiClient(), args.serviceId,
 				new String[] { input.newEventsLabel, input.regressedEventsLabel });
 
-		Collection<Pair<String, String>> views = new ArrayList<Pair<String, String>>();
+		Collection<Pair<String, String>> views = new ArrayList<>();
 
 		views.add(Pair.of(input.newEventsView, input.newEventsLabel));
 		views.add(Pair.of(input.regressedEventsView, input.regressedEventsLabel));
@@ -62,7 +62,7 @@ public class SeverityFunction {
 				args.viewId, input.activeTimespan, input.baseTimespan, input.minVolumeThreshold,
 				input.minErrorRateThreshold, input.regressionDelta, 0, input.criticalExceptionTypes, System.out);
 
-		Map<String, EventResult> allNewAndCritical = new HashMap<String, EventResult>();
+		Map<String, EventResult> allNewAndCritical = new HashMap<>();
 
 		allNewAndCritical.putAll(rateRegression.getExceededNewEvents());
 		allNewAndCritical.putAll(rateRegression.getCriticalNewEvents());
@@ -77,7 +77,7 @@ public class SeverityFunction {
 
 	private static Collection<EventResult> getActiveRegressionEvents(
 			Map<String, RegressionUtils.RegressionPair> regressions) {
-		List<EventResult> result = new ArrayList<EventResult>();
+		List<EventResult> result = new ArrayList<>();
 
 		for (RegressionUtils.RegressionPair pair : regressions.values()) {
 			result.add(pair.getActiveEvent());
@@ -98,7 +98,7 @@ public class SeverityFunction {
 
 		String applyLabelParams = "label=" + label;
 
-		Map<String, EventResult> newlyLabeledEvents = new HashMap<String, EventResult>();
+		Map<String, EventResult> newlyLabeledEvents = new HashMap<>();
 
 		for (EventResult event : targetEvents) {
 			boolean hasLabel = (event.labels != null) && (event.labels.contains(label));
@@ -232,7 +232,7 @@ public class SeverityFunction {
 
 		@Override
 		public String toString() {
-			return String.format("Severe(Window = %d, Baseline = %d, Thresh = %d, Rate = %d)", activeTimespan,
+			return String.format("Severe(Window = %d, Baseline = %d, Thresh = %d, Rate = %.2f)", activeTimespan,
 					baseTimespan, minVolumeThreshold, minErrorRateThreshold);
 		}
 	}

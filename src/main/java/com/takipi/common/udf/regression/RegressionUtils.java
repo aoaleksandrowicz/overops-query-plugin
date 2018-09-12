@@ -44,12 +44,12 @@ public class RegressionUtils {
 		private final Map<String, EventResult> baselineEvents;
 
 		RateRegression() {
-			allRegressions = new HashMap<String, RegressionPair>();
-			criticalNewEvents = new HashMap<String, EventResult>();
-			exceededNewEvents = new HashMap<String, EventResult>();
-			allNewEvents = new HashMap<String, EventResult>();
-			criticalRegressions = new HashMap<String, RegressionPair>();
-			baselineEvents = new HashMap<String, EventResult>();
+			allRegressions = new HashMap<>();
+			criticalNewEvents = new HashMap<>();
+			exceededNewEvents = new HashMap<>();
+			allNewEvents = new HashMap<>();
+			criticalRegressions = new HashMap<>();
+			baselineEvents = new HashMap<>();
 		}
 
 		public Map<String, EventResult> getAllNewEvents() {

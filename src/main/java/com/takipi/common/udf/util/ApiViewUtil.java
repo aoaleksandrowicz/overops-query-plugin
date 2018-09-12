@@ -69,7 +69,7 @@ public class ApiViewUtil {
 			return Collections.emptyMap();
 		}
 
-		Map<String, SummarizedView> result = new HashMap<String, SummarizedView>();
+		Map<String, SummarizedView> result = new HashMap<>();
 
 		for (SummarizedView view : viewsResponse.data.views) {
 			result.put(view.name, view);
