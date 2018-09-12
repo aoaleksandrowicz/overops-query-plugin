@@ -55,7 +55,7 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 	private final int minVolumeThreshold;
 	private final double minErrorRateThreshold;
 
-	private final double reggressionDelta;
+	private final double regressionDelta;
 	private final double criticalRegressionDelta;
 
 	private final int serverWait;
@@ -71,7 +71,7 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 			int activeTimespan, int baselineTimespan,
 			String criticalExceptionTypes,
 			int minVolumeThreshold, double minErrorRateThreshold, 
-			double reggressionDelta, double criticalRegressionDelta, 
+			double regressionDelta, double criticalRegressionDelta,
 			boolean markUnstable, boolean showResults, String serviceId,
 			int serverWait) {
 			
@@ -84,7 +84,7 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 		this.minErrorRateThreshold = minErrorRateThreshold;
 		this.minVolumeThreshold = minVolumeThreshold;
 
-		this.reggressionDelta = reggressionDelta;
+		this.regressionDelta = regressionDelta;
 		this.criticalRegressionDelta = criticalRegressionDelta;
 
 		this.serviceId = serviceId;
@@ -148,7 +148,7 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 		
 		RegressionReport report = RegressionReportBuilder.execute(apiClient, serviceId, 
 			allEventsView.id, activeTimespan, baselineTimespan, criticalExceptionTypes, 
-			minVolumeThreshold, minErrorRateThreshold, reggressionDelta, criticalRegressionDelta,
+			minVolumeThreshold, minErrorRateThreshold, regressionDelta, criticalRegressionDelta,
 			printStream);
 		
 		OverOpsBuildAction buildAction = new OverOpsBuildAction(report, run);

@@ -21,7 +21,7 @@
     <f:entry title="Error Rate Threshold (0-1)" field="minErrorRateThreshold">
         <f:textbox default="0.1"/>
     </f:entry>
-    <f:entry title="Regression Delta (0-1)" field="reggressionDelta">
+    <f:entry title="Regression Delta (0-1)" field="regressionDelta">
         <f:textbox default="0.15"/>
     </f:entry>
     <f:entry title="Critical Regression Threshold (0-1)" field="criticalRegressionDelta">

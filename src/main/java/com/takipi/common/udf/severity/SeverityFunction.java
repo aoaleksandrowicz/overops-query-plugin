@@ -35,11 +35,11 @@ public class SeverityFunction {
 
 	private static void setupSeverityViews(ContextArgs args, SeverityInput input) {
 		ApiLabelUtil.createLabelsIfNotExists(args.apiClient(), args.serviceId,
-				new String[] { input.newEventslabel, input.regressedEventsLabel });
+				new String[] { input.newEventsLabel, input.regressedEventsLabel });
 
 		Collection<Pair<String, String>> views = new ArrayList<Pair<String, String>>();
 
-		views.add(Pair.of(input.newEventsView, input.newEventslabel));
+		views.add(Pair.of(input.newEventsView, input.newEventsLabel));
 		views.add(Pair.of(input.regressedEventsView, input.regressedEventsLabel));
 
 		ApiViewUtil.createLabelViewsIfNotExists(args.apiClient(), args.serviceId, views);
@@ -60,7 +60,7 @@ public class SeverityFunction {
 
 		RateRegression rateRegression = RegressionUtils.calculateRateRegressions(args.apiClient(), args.serviceId,
 				args.viewId, input.activeTimespan, input.baseTimespan, input.minVolumeThreshold,
-				input.minErrorRateThreshold, input.reggressionDelta, 0, input.criticalExceptionTypes, System.out);
+				input.minErrorRateThreshold, input.regressionDelta, 0, input.criticalExceptionTypes, System.out);
 
 		Map<String, EventResult> allNewAndCritical = new HashMap<String, EventResult>();
 
@@ -68,7 +68,7 @@ public class SeverityFunction {
 		allNewAndCritical.putAll(rateRegression.getCriticalNewEvents());
 
 		// apply the "New Issue" and "Regression" labels to each of the lists
-		applySeverityLabels(args, input.newEventslabel, input.labelRetention, allNewAndCritical.values(),
+		applySeverityLabels(args, input.newEventsLabel, input.labelRetention, allNewAndCritical.values(),
 				rateRegression.getBaselineEvents());
 
 		applySeverityLabels(args, input.regressedEventsLabel, input.labelRetention,
@@ -194,12 +194,12 @@ public class SeverityFunction {
 			throw new IllegalArgumentException("'timespan' must be positive");
 		}
 
-		if (input.reggressionDelta <= 0) {
-			throw new IllegalArgumentException("'reggressionDelta' must be positive");
+		if (input.regressionDelta <= 0) {
+			throw new IllegalArgumentException("'regressionDelta' must be positive");
 		}
 
-		if (input.newEventslabel == null) {
-			throw new IllegalArgumentException("'newEventslabel' must exist");
+		if (input.newEventsLabel == null) {
+			throw new IllegalArgumentException("'newEventsLabel' must exist");
 		}
 
 		if (input.regressedEventsLabel == null) {
@@ -212,15 +212,15 @@ public class SeverityFunction {
 	static class SeverityInput extends Input {
 		public int activeTimespan; // the time window (min) that we compare the baseline to
 		public int baseTimespan; // the time window (min) to compare the last <activeTimespan> against
-		public double reggressionDelta; // a change in % that would be considered a regression
+		public double regressionDelta; // a change in % that would be considered a regression
 		public List<String> criticalExceptionTypes; // comma delimited list of exception types that are severe by def
 		public double minErrorRateThreshold; // min ER that a regression, new + non-critical event must exceed
 		public int minVolumeThreshold; // min volume that a regression, new + non-critical event must exceed
-		public String newEventslabel; // how to label new issues
+		public String newEventsLabel; // how to label new issues
 		public String regressedEventsLabel; // how to label regressions
 		public String newEventsView; // view containing new issues
 		public String regressedEventsView; // view containing regressions
-		public int labelRetention; // how long (min) should thse labels "stick" to an event
+		public int labelRetention; // how long (min) should these labels "stick" to an event
 
 		private SeverityInput(String raw) {
 			super(raw);

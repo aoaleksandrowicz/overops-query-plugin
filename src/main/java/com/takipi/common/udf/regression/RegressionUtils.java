@@ -79,7 +79,7 @@ public class RegressionUtils {
 
 	public static RateRegression calculateRateRegressions(ApiClient apiClient, String serviceId, String viewId,
 			int activeTimespan, int baselineTimespan, int minVolumeThreshold, double minErrorRateThreshold,
-			double reggressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
+			double regressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
 			PrintStream printStream) {
 
 		RateRegression result = new RateRegression();
@@ -151,7 +151,7 @@ public class RegressionUtils {
 				continue;
 			}
 
-			if (reggressionDelta == 0) {
+			if (regressionDelta == 0) {
 				continue;
 			}
 
@@ -177,7 +177,7 @@ public class RegressionUtils {
 			} else {
 				// see if the error rate has increased by more than X%, if so an above min
 				// volume, mark as regression
-				regression = activeEventRatio - baselineEventRatio >= reggressionDelta;
+				regression = activeEventRatio - baselineEventRatio >= regressionDelta;
 			}
 
 			// check if this event can be considered a rate regression
