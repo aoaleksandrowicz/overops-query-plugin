@@ -1,217 +1,223 @@
 package com.takipi.common.udf.regression;
 
-import java.io.PrintStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-
 import com.takipi.common.api.ApiClient;
 import com.takipi.common.api.result.event.EventResult;
 import com.takipi.common.api.result.volume.EventsVolumeResult;
 import com.takipi.common.udf.util.ApiViewUtil;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+
+import java.io.PrintStream;
+import java.text.NumberFormat;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegressionUtils {
-	public static class RegressionPair {
-		private final EventResult baseEvent;
-		private final EventResult activeEvent;
 
-		RegressionPair(EventResult baseEvent, EventResult activeEvent) {
-			this.baseEvent = baseEvent;
-			this.activeEvent = activeEvent;
-		}
+    private static final NumberFormat REGRESSION_FORMAT = NumberFormat.getPercentInstance();
 
-		public EventResult getBaseEvent() {
-			return baseEvent;
-		}
+    public static class RegressionPair {
+        private final EventResult baseEvent;
+        private final EventResult activeEvent;
 
-		public EventResult getActiveEvent() {
-			return activeEvent;
-		}
-	}
+        RegressionPair(EventResult baseEvent, EventResult activeEvent) {
+            this.baseEvent = baseEvent;
+            this.activeEvent = activeEvent;
+        }
 
-	public static class RateRegression {
-		private final Map<String, EventResult> allNewEvents;
+        public EventResult getBaseEvent() {
+            return baseEvent;
+        }
 
-		private final Map<String, RegressionPair> allRegressions;
-		private final Map<String, RegressionPair> criticalRegressions;
+        public EventResult getActiveEvent() {
+            return activeEvent;
+        }
+    }
 
-		private final Map<String, EventResult> exceededNewEvents;
-		private final Map<String, EventResult> criticalNewEvents;
+    public static class RateRegression {
+        private final Map<String, EventResult> allNewEvents;
 
-		private final Map<String, EventResult> baselineEvents;
+        private final Map<String, RegressionPair> allRegressions;
+        private final Map<String, RegressionPair> criticalRegressions;
 
-		RateRegression() {
-			allRegressions = new HashMap<>();
-			criticalNewEvents = new HashMap<>();
-			exceededNewEvents = new HashMap<>();
-			allNewEvents = new HashMap<>();
-			criticalRegressions = new HashMap<>();
-			baselineEvents = new HashMap<>();
-		}
+        private final Map<String, EventResult> exceededNewEvents;
+        private final Map<String, EventResult> criticalNewEvents;
 
-		public Map<String, EventResult> getAllNewEvents() {
-			return allNewEvents;
-		}
+        private final Map<String, EventResult> baselineEvents;
 
-		public Map<String, RegressionPair> getAllRegressions() {
-			return allRegressions;
-		}
+        RateRegression() {
+            allRegressions = new HashMap<>();
+            criticalNewEvents = new HashMap<>();
+            exceededNewEvents = new HashMap<>();
+            allNewEvents = new HashMap<>();
+            criticalRegressions = new HashMap<>();
+            baselineEvents = new HashMap<>();
+        }
 
-		public Map<String, RegressionPair> getCriticalRegressions() {
-			return criticalRegressions;
-		}
+        public Map<String, EventResult> getAllNewEvents() {
+            return allNewEvents;
+        }
 
-		public Map<String, EventResult> getExceededNewEvents() {
-			return exceededNewEvents;
-		}
+        public Map<String, RegressionPair> getAllRegressions() {
+            return allRegressions;
+        }
 
-		public Map<String, EventResult> getCriticalNewEvents() {
-			return criticalNewEvents;
-		}
+        public Map<String, RegressionPair> getCriticalRegressions() {
+            return criticalRegressions;
+        }
 
-		public Map<String, EventResult> getBaselineEvents() {
-			return baselineEvents;
-		}
-	}
+        public Map<String, EventResult> getExceededNewEvents() {
+            return exceededNewEvents;
+        }
 
-	public static RateRegression calculateRateRegressions(ApiClient apiClient, String serviceId, String viewId,
-			int activeTimespan, int baselineTimespan, int minVolumeThreshold, double minErrorRateThreshold,
-			double regressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
-			PrintStream printStream) {
+        public Map<String, EventResult> getCriticalNewEvents() {
+            return criticalNewEvents;
+        }
 
-		RateRegression result = new RateRegression();
+        public Map<String, EventResult> getBaselineEvents() {
+            return baselineEvents;
+        }
+    }
 
-		DateTime now = DateTime.now();
-		DateTime activeFrom = now.minusMinutes(activeTimespan);
+    public static RateRegression calculateRateRegressions(ApiClient apiClient, String serviceId, String viewId,
+                                                          int activeTimespan, int baselineTimespan, int minVolumeThreshold, double minErrorRateThreshold,
+                                                          double regressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
+                                                          PrintStream printStream) {
 
-		EventsVolumeResult activeEventVolume = ApiViewUtil.getEventsVolume(apiClient, serviceId, viewId, activeFrom,
-				now);
+        REGRESSION_FORMAT.setMaximumFractionDigits(2);
 
-		DateTime baselineFrom = now.minusMinutes(baselineTimespan);
+        RateRegression result = new RateRegression();
 
-		EventsVolumeResult baselineEventVolume = ApiViewUtil.getEventsVolume(apiClient, serviceId, viewId, baselineFrom,
-				now);
 
-		for (EventResult eventResult : baselineEventVolume.events) {
-			if (eventResult.stats == null) {
-				continue;
-			}
+        DateTime now = DateTime.now();
+        DateTime activeFrom = now.minusMinutes(activeTimespan);
 
-			result.getBaselineEvents().put(eventResult.id, eventResult);
-		}
+        EventsVolumeResult activeEventVolume = ApiViewUtil.getEventsVolume(apiClient, serviceId, viewId, activeFrom,
+                now);
 
-		for (EventResult activeEvent : activeEventVolume.events) {
-			DateTime firstSeen = ISODateTimeFormat.dateTimeParser().parseDateTime(activeEvent.first_seen);
+        DateTime baselineFrom = now.minusMinutes(baselineTimespan);
 
-			boolean isNew = firstSeen.isAfter(activeFrom);
+        EventsVolumeResult baselineEventVolume = ApiViewUtil.getEventsVolume(apiClient, serviceId, viewId, baselineFrom,
+                now);
 
-			if (isNew) {
-				result.getAllNewEvents().put(activeEvent.id, activeEvent);
+        for (EventResult eventResult : baselineEventVolume.events) {
+            if (eventResult.stats == null) {
+                continue;
+            }
 
-				// events types in the critical list are considered as new regardless of
-				// threshold
+            result.getBaselineEvents().put(eventResult.id, eventResult);
+        }
 
-				boolean isUncaught = activeEvent.type.equals("Uncaught Exception");
-				boolean isCriticalEventType = criticalExceptionTypes.contains(activeEvent.name);
+        for (EventResult activeEvent : activeEventVolume.events) {
+            DateTime firstSeen = ISODateTimeFormat.dateTimeParser().parseDateTime(activeEvent.first_seen);
 
-				if ((isUncaught) || (isCriticalEventType)) {
-					result.getCriticalNewEvents().put(activeEvent.id, activeEvent);
+            boolean isNew = firstSeen.isAfter(activeFrom);
 
-					if (printStream != null) {
-						printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " - "
-								+ activeEvent.name + " is critical with " + activeEvent.stats.hits);
-					}
+            if (isNew) {
+                result.getAllNewEvents().put(activeEvent.id, activeEvent);
 
-					continue;
-				}
-			}
+                // events types in the critical list are considered as new regardless of
+                // threshold
 
-			if ((activeEvent.stats == null) || (activeEvent.stats.invocations == 0) || (activeEvent.stats.hits == 0)) {
-				continue;
-			}
+                boolean isUncaught = activeEvent.type.equals("Uncaught Exception");
+                boolean isCriticalEventType = criticalExceptionTypes.contains(activeEvent.name);
 
-			double activeEventRatio = ((double) activeEvent.stats.hits / (double) activeEvent.stats.invocations);
+                if ((isUncaught) || (isCriticalEventType)) {
+                    result.getCriticalNewEvents().put(activeEvent.id, activeEvent);
 
-			if ((activeEventRatio < minErrorRateThreshold) || (activeEvent.stats.hits < minVolumeThreshold)) {
-				continue;
-			}
+                    if (printStream != null) {
+                        printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " - "
+                                + activeEvent.name + " is critical with " + activeEvent.stats.hits);
+                    }
 
-			if (isNew) {
+                    continue;
+                }
+            }
 
-				result.getExceededNewEvents().put(activeEvent.id, activeEvent);
+            if ((activeEvent.stats == null) || (activeEvent.stats.invocations == 0) || (activeEvent.stats.hits == 0)) {
+                continue;
+            }
 
-				if (printStream != null) {
-					printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " is new with ER: "
-							+ activeEventRatio + " hits: " + activeEvent.stats.hits);
-				}
+            double activeEventRatio = ((double) activeEvent.stats.hits / (double) activeEvent.stats.invocations);
 
-				continue;
-			}
+            if ((activeEventRatio < minErrorRateThreshold) || (activeEvent.stats.hits < minVolumeThreshold)) {
+                continue;
+            }
 
-			if (regressionDelta == 0) {
-				continue;
-			}
+            if (isNew) {
 
-			EventResult baseLineEvent = result.getBaselineEvents().get(activeEvent.id);
+                result.getExceededNewEvents().put(activeEvent.id, activeEvent);
 
-			if (baseLineEvent == null) {
-				continue;
-			}
+                if (printStream != null) {
+                    printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " is new with ER: "
+                            + REGRESSION_FORMAT.format(activeEventRatio) + " hits: " + activeEvent.stats.hits);
+                }
 
-			// see what the error rate is for the event
-			double baselineEventRatio;
+                continue;
+            }
 
-			if (baseLineEvent.stats.invocations > 0) {
-				baselineEventRatio = (double) baseLineEvent.stats.hits / (double) baseLineEvent.stats.invocations;
-			} else {
-				baselineEventRatio = 0;
-			}
+            if (regressionDelta == 0) {
+                continue;
+            }
 
-			boolean regression;
+            EventResult baseLineEvent = result.getBaselineEvents().get(activeEvent.id);
 
-			if (baselineEventRatio == 0) {
-				regression = true;
-			} else {
-				// see if the error rate has increased by more than X%, if so an above min
-				// volume, mark as regression
-				regression = activeEventRatio - baselineEventRatio >= regressionDelta;
-			}
+            if (baseLineEvent == null) {
+                continue;
+            }
 
-			// check if this event can be considered a rate regression
-			if (!regression) {
-				continue;
-			}
-			result.getAllRegressions().put(activeEvent.id, new RegressionPair(baseLineEvent, activeEvent));
+            // see what the error rate is for the event
+            double baselineEventRatio;
 
-			if (printStream != null) {
-				printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " regressed from ER: "
-						+ baselineEventRatio + " to: " + activeEventRatio + " hits: " + activeEvent.stats.hits);
-			}
+            if (baseLineEvent.stats.invocations > 0) {
+                baselineEventRatio = (double) baseLineEvent.stats.hits / (double) baseLineEvent.stats.invocations;
+            } else {
+                baselineEventRatio = 0;
+            }
 
-			// check if this event can be considered a critical rate regression
-			if (criticalRegressionDelta == 0) {
-				continue;
-			}
+            boolean regression;
 
-			boolean criticalRegression = activeEventRatio - baselineEventRatio >= criticalRegressionDelta;
+            if (baselineEventRatio == 0) {
+                regression = true;
+            } else {
+                // see if the error rate has increased by more than X%, if so an above min
+                // volume, mark as regression
+                regression = activeEventRatio - baselineEventRatio >= regressionDelta;
+            }
 
-			if (!criticalRegression) {
-				continue;
-			}
+            // check if this event can be considered a rate regression
+            if (!regression) {
+                continue;
+            }
+            result.getAllRegressions().put(activeEvent.id, new RegressionPair(baseLineEvent, activeEvent));
 
-			result.getCriticalRegressions().put(activeEvent.id, new RegressionPair(baseLineEvent, activeEvent));
+            if (printStream != null) {
+                printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " regressed from ER: "
+                        + REGRESSION_FORMAT.format(baselineEventRatio) + " to: " + REGRESSION_FORMAT.format(activeEventRatio) + " hits: " + activeEvent.stats.hits);
+            }
 
-			if (printStream != null) {
-				printStream
-						.println("Event " + activeEvent.id + " " + activeEvent.type + " critically regressed from ER: "
-								+ baselineEventRatio + " to: " + activeEventRatio + " hits: " + activeEvent.stats.hits);
-			}
+            // check if this event can be considered a critical rate regression
+            if (criticalRegressionDelta == 0) {
+                continue;
+            }
 
-		}
+            boolean criticalRegression = activeEventRatio - baselineEventRatio >= criticalRegressionDelta;
 
-		return result;
-	}
+            if (!criticalRegression) {
+                continue;
+            }
+
+            result.getCriticalRegressions().put(activeEvent.id, new RegressionPair(baseLineEvent, activeEvent));
+
+            if (printStream != null) {
+                printStream
+                        .println("Event " + activeEvent.id + " " + activeEvent.type + " critically regressed from ER: "
+                                + REGRESSION_FORMAT.format(baselineEventRatio) + " to: " + REGRESSION_FORMAT.format(activeEventRatio) + " hits: " + activeEvent.stats.hits);
+            }
+
+        }
+
+        return result;
+    }
 }
