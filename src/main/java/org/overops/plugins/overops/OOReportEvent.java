@@ -1,18 +1,24 @@
 package org.overops.plugins.overops;
 
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.regex.Pattern;
 
 import com.takipi.common.api.result.event.EventResult;
 
 public class OOReportEvent {
-	
-	protected static final DecimalFormat decimalFormat = new DecimalFormat("#.00"); 
-	
-	public static final String NEW_ISSUE = "New";
-	public static final String SEVERE_NEW = "Severe New";
-	public static final String REGRESSION = "Regression";
-	public static final String SEVERE_REGRESSION = "Severe Regression";
+	static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance();
+	static final NumberFormat NUMBER_FORMAT = NumberFormat.getNumberInstance();
+
+	static {
+		PERCENT_FORMAT.setMaximumFractionDigits(2);
+		PERCENT_FORMAT.setMinimumFractionDigits(2);
+		PERCENT_FORMAT.setMinimumIntegerDigits(1);
+	}
+
+	static final String NEW_ISSUE = "New";
+	static final String SEVERE_NEW = "Severe New";
+	static final String REGRESSION = "Regression";
+	static final String SEVERE_REGRESSION = "Severe Regression";
 	
 	protected final EventResult event;
 	protected final String arcLink;
@@ -41,13 +47,17 @@ public class OOReportEvent {
 
 	public String getEventRate() {
 		StringBuilder result = new StringBuilder();
-		
-		double rate = (double)event.stats.hits / (double)event.stats.invocations * 100; 	
-		
-		result.append(event.stats.hits);
-		result.append(" (");
-		result.append(decimalFormat.format(rate));
-		result.append("%)");
+
+		result.append(NUMBER_FORMAT.format(event.stats.hits));
+
+		if (event.stats.hits > 0 && event.stats.invocations > 0) {
+
+			double rate = (double) event.stats.hits / (double) event.stats.invocations;
+			result.append(" (");
+			result.append(PERCENT_FORMAT.format(rate));
+			result.append(")");
+
+		}
 		
 		return result.toString();
 	}

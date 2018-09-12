@@ -2,36 +2,35 @@ package org.overops.plugins.overops;
 
 import com.takipi.common.api.result.event.EventResult;
 
-public class OOReportRegressedEvent extends OOReportEvent{
+public class OOReportRegressedEvent extends OOReportEvent {
 
     private final EventResult baseLineEvent;
 
     public OOReportRegressedEvent(EventResult activeEvent, EventResult baseLineEvent, String type, String arcLink) {
-    		
-    		super(activeEvent, type, arcLink);
-    		
-    		this.baseLineEvent = baseLineEvent;
+
+        super(activeEvent, type, arcLink);
+
+        this.baseLineEvent = baseLineEvent;
     }
-    
+
     @Override
     public String getEventRate() {
-    	
-    		double rate = (double)baseLineEvent.stats.hits / (double)baseLineEvent.stats.invocations * 100; 	
-    		
-    		StringBuilder result = new StringBuilder();
-    		result.append(super.getEventRate());
-    		result.append(" from ");
-    		result.append(decimalFormat.format(rate));
-    		result.append("%");
-    		
-    		return result.toString();
-	}
-    
+        double rate = 0.0;
+
+        if (baseLineEvent.stats.hits > 0 && baseLineEvent.stats.invocations > 0) {
+            rate = (double) baseLineEvent.stats.hits / (double) baseLineEvent.stats.invocations;
+        }
+
+        return super.getEventRate() +
+                " from " +
+                PERCENT_FORMAT.format(rate);
+    }
+
     public long getBaselineHits() {
         return baseLineEvent.stats.hits;
     }
-    
+
     public long getBaselineCalls() {
-        return  baseLineEvent.stats.invocations;
+        return baseLineEvent.stats.invocations;
     }
 }

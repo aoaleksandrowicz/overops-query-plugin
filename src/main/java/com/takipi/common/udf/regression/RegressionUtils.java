@@ -15,7 +15,12 @@ import java.util.Map;
 
 public class RegressionUtils {
 
-    private static final NumberFormat REGRESSION_FORMAT = NumberFormat.getPercentInstance();
+    private static final NumberFormat PERCENT_FORMAT = NumberFormat.getPercentInstance();
+    private static final NumberFormat COUNT_FORMAT = NumberFormat.getNumberInstance();
+
+    static {
+        PERCENT_FORMAT.setMaximumFractionDigits(2);
+    }
 
     public static class RegressionPair {
         private final EventResult baseEvent;
@@ -85,10 +90,8 @@ public class RegressionUtils {
                                                           double regressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
                                                           PrintStream printStream) {
 
-        REGRESSION_FORMAT.setMaximumFractionDigits(2);
 
         RateRegression result = new RateRegression();
-
 
         DateTime now = DateTime.now();
         DateTime activeFrom = now.minusMinutes(activeTimespan);
@@ -128,7 +131,7 @@ public class RegressionUtils {
 
                     if (printStream != null) {
                         printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " - "
-                                + activeEvent.name + " is critical with " + activeEvent.stats.hits);
+                                + activeEvent.name + " is critical with " + COUNT_FORMAT.format(activeEvent.stats.hits));
                     }
 
                     continue;
@@ -151,7 +154,7 @@ public class RegressionUtils {
 
                 if (printStream != null) {
                     printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " is new with ER: "
-                            + REGRESSION_FORMAT.format(activeEventRatio) + " hits: " + activeEvent.stats.hits);
+                            + PERCENT_FORMAT.format(activeEventRatio) + " hits: " + COUNT_FORMAT.format(activeEvent.stats.hits));
                 }
 
                 continue;
@@ -194,7 +197,7 @@ public class RegressionUtils {
 
             if (printStream != null) {
                 printStream.println("Event " + activeEvent.id + " " + activeEvent.type + " regressed from ER: "
-                        + REGRESSION_FORMAT.format(baselineEventRatio) + " to: " + REGRESSION_FORMAT.format(activeEventRatio) + " hits: " + activeEvent.stats.hits);
+                        + PERCENT_FORMAT.format(baselineEventRatio) + " to: " + PERCENT_FORMAT.format(activeEventRatio) + " hits: " + COUNT_FORMAT.format(activeEvent.stats.hits));
             }
 
             // check if this event can be considered a critical rate regression
@@ -213,7 +216,7 @@ public class RegressionUtils {
             if (printStream != null) {
                 printStream
                         .println("Event " + activeEvent.id + " " + activeEvent.type + " critically regressed from ER: "
-                                + REGRESSION_FORMAT.format(baselineEventRatio) + " to: " + REGRESSION_FORMAT.format(activeEventRatio) + " hits: " + activeEvent.stats.hits);
+                                + PERCENT_FORMAT.format(baselineEventRatio) + " to: " + PERCENT_FORMAT.format(activeEventRatio) + " hits: " + COUNT_FORMAT.format(activeEvent.stats.hits));
             }
 
         }
