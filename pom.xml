@@ -14,7 +14,7 @@
     <url>https://wiki.jenkins.io/display/JENKINS/OverOps+Query+Plugin</url>
     <groupId>org.overops.plugins</groupId>
     <artifactId>overops-query</artifactId>
-    <version>0.25-SNAPSHOT</version>
+    <version>0.26-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <properties>
@@ -22,6 +22,15 @@
     </properties>
 
     <profiles>
+        <profile>
+            <id>jenkins-2121</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <jenkins.version>2.121.3</jenkins.version>
+            </properties>
+        </profile>
         <profile>
             <id>jenkins-289</id>
             <properties>
@@ -66,7 +75,6 @@
         </profile>
         <profile>
             <id>jenkins-651</id>
-            <activation></activation>
             <properties>
                 <jenkins.version>1.651.3</jenkins.version>
             </properties>
@@ -82,84 +90,6 @@
     </licenses>
 
     <dependencies>
-        <!--		<dependency>
-                    <groupId>org.jenkins-ci.plugins</groupId>
-                    <artifactId>structs</artifactId>
-                    <version>1.7</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-step-api</artifactId>
-                    <version>2.12</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-cps</artifactId>
-                    <version>2.39</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-job</artifactId>
-                    <version>2.11.2</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-basic-steps</artifactId>
-                    <version>2.6</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-durable-task-step</artifactId>
-                    <version>2.13</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-api</artifactId>
-                    <version>2.20</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jenkins-ci.plugins.workflow</groupId>
-                    <artifactId>workflow-support</artifactId>
-                    <version>2.14</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>javax.ws.rs</groupId>
-                    <artifactId>javax.ws.rs-api</artifactId>
-                    <version>2.1</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.google.code.gson</groupId>
-                    <artifactId>gson</artifactId>
-                    <version>2.8.5</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                    <artifactId>jackson-jaxrs-json-provider</artifactId>
-                    <version>2.8.10</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.jersey.core</groupId>
-                    <artifactId>jersey-client</artifactId>
-                    <version>2.26</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-json-jackson</artifactId>
-                    <version>2.26</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.inject</groupId>
-                    <artifactId>jersey-hk2</artifactId>
-                    <version>2.26</version>
-                </dependency>-->
 
         <dependency>
             <groupId>org.jenkins-ci</groupId>
@@ -190,6 +120,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.8</version>
         </dependency>
+
     </dependencies>
 
 
@@ -198,6 +129,11 @@
             <id>joeOffenberg</id>
             <name>Joe Offenberg</name>
             <email>joe.offenberg@overops.com</email>
+        </developer>
+        <developer>
+            <id>timveil</id>
+            <name>Tim Veil</name>
+            <email>tim.veilg@overops.com</email>
         </developer>
     </developers>
 

@@ -17,7 +17,7 @@ The plugin provides a mechanism for querying OverOps as a post build step to ens
   
   **OverOps URL:**  The complete url including port of the OverOps e.g. http://localhost:8080 or for SaaS  https://api.overops.com
   
-  **OverOps Service ID*  OverOps Service ID (begins with S)
+  **OverOps Service ID**  OverOps Service ID (begins with S)
   
   **OverOps User**  OverOps username with access to the relevant events.
   
