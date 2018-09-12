@@ -122,7 +122,7 @@ public class SeverityFunction {
 			}
 
 			// if this event wasn't prev marked as severe - skip
-			if ((event.labels != null) && (!event.labels.contains(label))) {
+			if ((event.labels == null) || (!event.labels.contains(label))) {
 				continue;
 			}
 
