@@ -1,4 +1,4 @@
-package com.overops.plugins.jenkins.query;
+package org.overops.plugins.jenkins.query;
 
 import com.takipi.common.api.result.event.EventResult;
 

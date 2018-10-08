@@ -1,4 +1,4 @@
-package com.overops.plugins.jenkins.query;
+package org.overops.plugins.jenkins.query;
 
 import java.text.NumberFormat;
 import java.util.regex.Pattern;

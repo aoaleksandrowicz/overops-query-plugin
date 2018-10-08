@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <relativePath/>
         <version>3.25</version>
+        <relativePath/>
     </parent>
 
     <name>OverOps Query Plugin</name>

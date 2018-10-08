@@ -1,4 +1,4 @@
-package com.overops.common.util;
+package org.overops.plugins.common.util;
 
 import java.io.PrintStream;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
-import com.overops.common.api.util.ApiViewUtil;
+import org.overops.plugins.common.api.util.ApiViewUtil;
 import com.takipi.common.api.ApiClient;
 import com.takipi.common.api.result.event.EventResult;
 import com.takipi.common.api.result.volume.EventsVolumeResult;
@@ -79,7 +79,7 @@ public class RegressionUtil {
 
 	public static RateRegression calculateRateRegressions(ApiClient apiClient, String serviceId, String viewId,
 			int activeTimespan, int baselineTimespan, int minVolumeThreshold, double minErrorRateThreshold,
-			double reggressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
+			double regressionDelta, double criticalRegressionDelta, Collection<String> criticalExceptionTypes,
 			PrintStream printStream) {
 
 		RateRegression result = new RateRegression();
@@ -153,7 +153,7 @@ public class RegressionUtil {
 					continue;
 				}
 	
-				if (reggressionDelta == 0) {
+				if (regressionDelta == 0) {
 					continue;
 				}
 	
@@ -179,7 +179,7 @@ public class RegressionUtil {
 				} else {
 					// see if the error rate has increased by more than X%, if so an above min
 					// volume, mark as regression
-					regression = activeEventRatio - baselineEventRatio >= reggressionDelta;
+					regression = activeEventRatio - baselineEventRatio >= regressionDelta;
 				}
 	
 				// check if this event can be considered a rate regression

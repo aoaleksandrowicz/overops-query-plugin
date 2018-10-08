@@ -1,17 +1,15 @@
-package com.overops.plugins.jenkins.query;
+package org.overops.plugins.jenkins.query;
 
 import java.util.List;
-
-import com.overops.plugins.jenkins.query.RegressionReportBuilder.RegressionReport;
 
 import hudson.model.Action;
 import hudson.model.Run;
 
 public class OverOpsBuildAction implements Action {
     private final Run<?, ?> build;
-    private final RegressionReport regressionReport;
+    private final RegressionReportBuilder.RegressionReport regressionReport;
     
-    OverOpsBuildAction(RegressionReport regressionReport, Run<?, ?> build) {
+    OverOpsBuildAction(RegressionReportBuilder.RegressionReport regressionReport, Run<?, ?> build) {
         this.regressionReport = regressionReport;
         this.build = build;
     }

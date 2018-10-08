@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-package com.overops.plugins.jenkins.query;
+package org.overops.plugins.jenkins.query;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import com.overops.common.api.util.ApiViewUtil;
-import com.overops.plugins.jenkins.query.RegressionReportBuilder.RegressionReport;
+import org.overops.plugins.common.api.util.ApiViewUtil;
+import org.overops.plugins.jenkins.query.RegressionReportBuilder.RegressionReport;
 import com.takipi.common.api.ApiClient;
 import com.takipi.common.api.data.view.SummarizedView;
 

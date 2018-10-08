@@ -1,4 +1,4 @@
-package com.overops.common.api.util;
+package org.overops.plugins.common.api.util;
 
 import java.util.Collection;
 import java.util.Collections;
