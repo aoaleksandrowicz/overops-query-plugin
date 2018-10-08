@@ -23,10 +23,16 @@
 
     <profiles>
         <profile>
-            <id>jenkins-2121</id>
+            <id>jenkins-2138</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <jenkins.version>2.138.1</jenkins.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jenkins-2121</id>
             <properties>
                 <jenkins.version>2.121.3</jenkins.version>
             </properties>
