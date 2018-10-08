@@ -6,7 +6,7 @@
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <relativePath/>
-        <version>3.21</version>
+        <version>3.25</version>
     </parent>
 
     <name>OverOps Query Plugin</name>
@@ -14,7 +14,7 @@
     <url>https://wiki.jenkins.io/display/JENKINS/OverOps+Query+Plugin</url>
     <groupId>org.overops.plugins</groupId>
     <artifactId>overops-query</artifactId>
-    <version>0.26-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <properties>
@@ -104,27 +104,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.10</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.trove4j</groupId>
-            <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.8</version>
+            <groupId>com.takipi</groupId>
+            <artifactId>api-client</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
     </dependencies>
@@ -164,5 +146,16 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>3.0.5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
