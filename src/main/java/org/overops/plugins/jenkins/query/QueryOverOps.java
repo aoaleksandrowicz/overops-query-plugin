@@ -46,7 +46,7 @@ import hudson.util.Secret;
 import jenkins.tasks.SimpleBuildStep;
 
 public class QueryOverOps extends Recorder implements SimpleBuildStep {
-	
+
 	private final int activeTimespan;
 	private final int baselineTimespan;
 
@@ -60,22 +60,28 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 
 	private final int serverWait;
 	private final boolean showResults;
-	
+
 	private final String serviceId;
-	
+
 	private final boolean markUnstable;
 
-	
+	private final String applicationName;
+
+	private final String deploymentName;
+
+
 	@DataBoundConstructor
 	public QueryOverOps(String applicationName, String deploymentName,
 			int activeTimespan, int baselineTimespan,
 			String criticalExceptionTypes,
-			int minVolumeThreshold, double minErrorRateThreshold, 
+			int minVolumeThreshold, double minErrorRateThreshold,
 			double regressionDelta, double criticalRegressionDelta,
 			boolean markUnstable, boolean showResults, String serviceId,
 			int serverWait) {
-			
-		
+
+
+		this.applicationName = applicationName;
+		this.deploymentName = deploymentName;
 		this.criticalExceptionTypes = criticalExceptionTypes;
 
 		this.activeTimespan = activeTimespan;
@@ -88,10 +94,62 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 		this.criticalRegressionDelta = criticalRegressionDelta;
 
 		this.serviceId = serviceId;
-		
+
 		this.serverWait = serverWait;
 		this.showResults = showResults;
 		this.markUnstable = markUnstable;
+	}
+
+	public int getActiveTimespan() {
+		return activeTimespan;
+	}
+
+	public int getBaselineTimespan() {
+		return baselineTimespan;
+	}
+
+	public String getCriticalExceptionTypes() {
+		return criticalExceptionTypes;
+	}
+
+	public int getMinVolumeThreshold() {
+		return minVolumeThreshold;
+	}
+
+	public double getMinErrorRateThreshold() {
+		return minErrorRateThreshold;
+	}
+
+	public double getRegressionDelta() {
+		return regressionDelta;
+	}
+
+	public double getCriticalRegressionDelta() {
+		return criticalRegressionDelta;
+	}
+
+	public int getServerWait() {
+		return serverWait;
+	}
+
+	public boolean isShowResults() {
+		return showResults;
+	}
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public boolean isMarkUnstable() {
+		return markUnstable;
+	}
+
+	public String getApplicationName() {
+		return applicationName;
+	}
+
+	public String getDeploymentName() {
+		return deploymentName;
 	}
 
 	public BuildStepMonitor getRequiredMonitorService() {
@@ -109,9 +167,9 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 
 		String apiHost = getDescriptor().getOverOpsURL();
 		String apiKey = Secret.toString(getDescriptor().getOverOpsAPIKey());
-		
+
 		String serviceId;
-		
+
 		if ((this.serviceId != null) && (!this.serviceId.isEmpty()))
 		{
 			serviceId = this.serviceId;
@@ -120,40 +178,40 @@ public class QueryOverOps extends Recorder implements SimpleBuildStep {
 		{
 			serviceId = getDescriptor().getOverOpsSID();
 		}
-		
+
 		PrintStream printStream;
-		
+
 		if (showResults) {
 			printStream = listener.getLogger();
 		} else {
-			printStream = null;	
+			printStream = null;
 		}
-		
+
 		ApiClient apiClient = ApiClient.newBuilder().setHostname(apiHost).setApiKey(apiKey).build();
-		
+
 		SummarizedView allEventsView = ApiViewUtil.getServiceViewByName(apiClient, serviceId, "All Events");
 
 		if (allEventsView == null) {
 			throw new IllegalStateException("Could not acquire ID for All events view");
 		}
-		
+
 		if (serverWait > 0) {
-			 
+
 			if (showResults) {
 				printStream.println("Waiting " + serverWait + " seconds for code analysis to complete");
 			}
-			
+
 			TimeUnit.SECONDS.sleep(serverWait);
 		}
-		
-		RegressionReport report = RegressionReportBuilder.execute(apiClient, serviceId, 
-			allEventsView.id, activeTimespan, baselineTimespan, criticalExceptionTypes, 
+
+		RegressionReport report = RegressionReportBuilder.execute(apiClient, serviceId,
+			allEventsView.id, activeTimespan, baselineTimespan, criticalExceptionTypes,
 			minVolumeThreshold, minErrorRateThreshold, regressionDelta, criticalRegressionDelta,
 			printStream);
-		
+
 		OverOpsBuildAction buildAction = new OverOpsBuildAction(report, run);
 		run.addAction(buildAction);
- 
+
 		if ((markUnstable) && (report.getUnstable())) {
 			run.setResult(Result.UNSTABLE);
 		}
