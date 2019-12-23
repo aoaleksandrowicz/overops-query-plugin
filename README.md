@@ -99,11 +99,11 @@ Detect all resurfaced errors in the build. If found, the build will be marked as
 
 ### Total Error Volume Gate
 
-Set the max total error volume allowed. If exceeded the build will be marked as unstable.
+Set the max total error volume allowed. If equal to or exceeded, the build will be marked as unstable, and top errors will be listed in the report. A setting of 0 (the default) will tell OverOps to ignore this quality gate, and it will be omitted from the report.
 
 ### Unique Error Volume Gate
 
-Set the max unique error volume allowed. If exceeded the build will be marked as unstable.
+Set the max unique error volume allowed. If equal to or exceeded, the build will be marked as unstable, and the top errors will be listed in the report.  A setting of 0 (the default) will tell OverOps to ignore this quality gate, and it will be omitted from the report.
 
 ### Critical Exception Type Gate
 
